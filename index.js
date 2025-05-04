@@ -12,25 +12,23 @@ paydunya.setup({
   privateKey: process.env.PRIVATE_KEY,
   publicKey: process.env.PUBLIC_KEY,
   token: process.env.TOKEN,
-  mode: "test" // change to "live" when ready
+  mode: "test" // or "live"
 });
 
-// Route to create invoice
+// Route to test invoice creation
 app.get("/pay", (req, res) => {
-  const invoice = new paydunya.Invoice();
-  
-  // Add a product to the invoice
-  invoice.addItem("Product Name", 1, 5000); // name, quantity, unit price
+  const invoice = new paydunya.CheckoutInvoice();
+
+  invoice.addItem("Product Name", 1, 5000);
   invoice.setTotalAmount(5000);
   invoice.setDescription("Paiement de test depuis Shopify");
 
-  // Create the invoice
-  invoice.create((response) => {
+  invoice.create(function(response) {
     if (response.response_code === "00") {
-      console.log("Invoice created successfully:", response.invoice_url);
-      res.redirect(response.invoice_url); // Redirect to PayDunya payment page
+      console.log("Redirecting to PayDunya:", response.invoice_url);
+      res.redirect(response.invoice_url);
     } else {
-      console.error("Invoice creation failed:", response.response_text);
+      console.error("Erreur de création de la facture:", response.response_text);
       res.status(500).send("Erreur: " + response.response_text);
     }
   });
@@ -43,5 +41,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-  
