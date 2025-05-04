@@ -15,34 +15,32 @@ paydunya.setup({
   mode: "test" // change to "live" when ready
 });
 
-// Route to create invoice
-app.get("/pay", async (req, res) => {
+// Create invoice route
+app.get("/pay", (req, res) => {
   const invoice = new paydunya.Invoice();
 
-  invoice.addItem("Product", 1, 5000, 5000); // name, quantity, unit price, total price
-  invoice.description = "Test payment from Shopify integration";
-  invoice.totalAmount = 5000;
+  invoice.addItem("Product Name", 1, 5000); // name, quantity, unit price
+  invoice.setTotalAmount(5000);
+  invoice.setDescription("Paiement de test depuis Shopify");
 
-  try {
-    const success = await invoice.create();
-
-    if (success) {
-      console.log("Invoice created successfully:", invoice.url);
-      res.redirect(invoice.url); // Redirect to PayDunya payment page
+  invoice.create((response) => {
+    if (response.response_code === "00") {
+      console.log("Invoice created successfully:", response.invoice_url);
+      res.redirect(response.invoice_url);
     } else {
-      console.error("Invoice creation failed:", invoice.response_text);
-      res.status(500).send("Payment creation failed: " + invoice.response_text);
+      console.error("Invoice creation failed:", response.response_text);
+      res.status(500).send("Erreur: " + response.response_text);
     }
-  } catch (err) {
-    console.error("Error while creating invoice:", err);
-    res.status(500).send("Error: " + err.message);
-  }
+  });
 });
 
 app.get("/", (req, res) => {
-  res.send("Server is up and running. Go to /pay to test the payment.");
+  res.send("Serveur actif. Visitez /pay pour tester PayDunya.");
 });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+
