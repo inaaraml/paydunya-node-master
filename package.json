@@ -8,7 +8,7 @@
     "build-debug": "browserify lib/index.js -o dist/paydunya-node.debug.js",
     "build": "browserify -g uglifyify lib/index.js -o dist/paydunya-node.min.js"
     "start": "node index.js",
-  "other-script": "command"
+    "other-script": "command"
   },
   "repository": {
     "type": "git",
