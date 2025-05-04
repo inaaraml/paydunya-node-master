@@ -12,7 +12,7 @@ paydunya.setup({
   privateKey: process.env.PRIVATE_KEY,
   publicKey: process.env.PUBLIC_KEY,
   token: process.env.TOKEN,
-  mode: "test" // Change à "live" lorsque prêt
+  mode: "live" // Change à "live" lorsque prêt
 });
 
 // Route pour créer la facture
