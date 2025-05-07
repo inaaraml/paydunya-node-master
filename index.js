@@ -10,9 +10,9 @@ app.use(bodyParser.json());
 // PayDunya API credentials
 const paydunyaConfig = {
   masterKey: 'p0BUuHM8-FUfj-tK5d-jaEr-obgOHMMdDMpB',
-  privateKey: 'test_private_x37dj3brXj1z4T4BsclKCCExKFX',
-  publicKey: 'test_public_ZTs70WPu5LFhdn3Lbhrq1amGKua',
-  token: 'zngSd5eMh1qn6sxCEBJs',
+  privateKey: 'test_private_PT8WPhFM6n0JJ0XcVTMTExXR3qI',
+  publicKey: 'test_public_ulXnPRaxlGAGSznQudRjOSmsnZe',
+  token: 'IVgwUfOAXoUJGfRz7x3l',
   mode: 'test'  // change this to 'live' when moving to production
 };
 
