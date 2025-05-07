@@ -13,31 +13,7 @@ const paydunyaConfig = {
   privateKey: 'test_private_x37dj3brXj1z4T4BsclKCCExKFX',
   publicKey: 'test_public_ZTs70WPu5LFhdn3Lbhrq1amGKua',
   token: 'zngSd5eMh1qn6sxCEBJs',
-  mode: 'test'
-};
-
-// Test homepage route
-app.get('/', (req, res) => {
-  res.send('Bienvenue sur l’intégration PayDunya – Shopify');
-});
-
-// Route to create payment invoice
-const express = require('express');
-const bodyParser = require('body-parser');
-const axios = require('axios');
-const app = express();
-const port = process.env.PORT || 3000;
-
-// Middleware to parse JSON
-app.use(bodyParser.json());
-
-// PayDunya API credentials
-const paydunyaConfig = {
-  masterKey: 'your-test-master-key',
-  privateKey: 'your-test-private-key',
-  publicKey: 'your-test-public-key',
-  token: 'your-test-token',
-  mode: 'test'
+  mode: 'test'  // change this to 'live' when moving to production
 };
 
 // Test homepage route
@@ -96,4 +72,3 @@ app.get('/pay', async (req, res) => {
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
 });
-
