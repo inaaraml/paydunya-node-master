@@ -1,20 +1,3 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const paydunya = require("paydunya");
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-
-// PayDunya Setup
-paydunya.setup({
-  masterKey: process.env.MASTER_KEY,
-  privateKey: process.env.PRIVATE_KEY,
-  publicKey: process.env.PUBLIC_KEY,
-  token: process.env.TOKEN,
-  mode: "test" // Change to "live" when you're ready
-});
-
 app.get("/pay", async (req, res) => {
   const invoice = new paydunya.Invoice();
 
@@ -27,20 +10,18 @@ app.get("/pay", async (req, res) => {
     if (success) {
       res.redirect(invoice.url);
     } else {
-      console.error("Invoice creation failed:", invoice.response_text);
-      res.status(500).send("Payment creation failed: " + invoice.response_text);
+      // Show full PayDunya error on the page
+      res.status(500).send(`
+        <h1>Payment creation failed</h1>
+        <pre>${JSON.stringify(invoice.response_text, null, 2)}</pre>
+      `);
     }
   } catch (err) {
-    console.error("Error during invoice creation:", err);
-    res.status(500).send("Error: " + err.message);
+    res.status(500).send(`
+      <h1>Error</h1>
+      <pre>${err.message}</pre>
+    `);
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello, the PayDunya server is working!");
-});
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
 
