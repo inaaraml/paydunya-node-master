@@ -7,51 +7,37 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 // PayDunya Setup
-paydunya.debug(true);
-paydunya.setKeys(
-  process.env.MASTER_KEY,
-  process.env.PRIVATE_KEY,
-  process.env.PUBLIC_KEY,
-  process.env.TOKEN
-);
-paydunya.setMode("test"); // or "live"
+paydunya.setup({
+  masterKey: process.env.MASTER_KEY,
+  privateKey: process.env.PRIVATE_KEY,
+  publicKey: process.env.PUBLIC_KEY,
+  token: process.env.TOKEN,
+  mode: "test" // Use "live" for production
+});
 
 app.get("/pay", (req, res) => {
-  paydunya.Invoice.create({
-    invoice: {
-      items: [
-        {
-          name: "Test Product",
-          quantity: 1,
-          unit_price: 5000,
-          total_price: 5000
-        }
-      ],
-      description: "Test payment from PayDunya",
-      total_amount: 5000,
-    },
-    actions: {
-      callback_url: "https://your-callback-url.com",
-      cancel_url: "https://your-cancel-url.com",
-      return_url: "https://your-return-url.com"
-    }
-  }, function (resp, invoice) {
-    if (resp === true) {
-      res.redirect(invoice.response.checkout_url);
-    } else {
-      res.status(500).send("Payment creation failed: " + invoice.response.text);
-    }
-  });
+  const invoice = new paydunya.Invoice();
+
+  invoice.addItem("Test Product", 1, 5000, 5000);
+  invoice.description = "Test payment from Shopify integration";
+  invoice.totalAmount = 5000;
+
+  invoice.create()
+    .then(() => {
+      res.redirect(invoice.url);
+    })
+    .catch((err) => {
+      res.status(500).send("Payment creation failed: " + err.message);
+    });
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello, PayDunya server is working!");
+  res.send("Hello, the PayDunya server is working!");
 });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
 
 
   
