@@ -12,7 +12,7 @@ paydunya.setup({
   privateKey: process.env.PRIVATE_KEY,
   publicKey: process.env.PUBLIC_KEY,
   token: process.env.TOKEN,
-  mode: "test" // Change to "live" later
+  mode: "test" // Change to "live" when you're ready
 });
 
 app.get("/pay", async (req, res) => {
@@ -43,3 +43,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
