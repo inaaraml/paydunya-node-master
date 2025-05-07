@@ -12,23 +12,28 @@ paydunya.setup({
   privateKey: process.env.PRIVATE_KEY,
   publicKey: process.env.PUBLIC_KEY,
   token: process.env.TOKEN,
-  mode: "test" // Use "live" for production
+  mode: "test" // Change to "live" later
 });
 
-app.get("/pay", (req, res) => {
+app.get("/pay", async (req, res) => {
   const invoice = new paydunya.Invoice();
 
   invoice.addItem("Test Product", 1, 5000, 5000);
   invoice.description = "Test payment from Shopify integration";
   invoice.totalAmount = 5000;
 
-  invoice.create()
-    .then(() => {
+  try {
+    const success = await invoice.create();
+    if (success) {
       res.redirect(invoice.url);
-    })
-    .catch((err) => {
-      res.status(500).send("Payment creation failed: " + err.message);
-    });
+    } else {
+      console.error("Invoice creation failed:", invoice.response_text);
+      res.status(500).send("Payment creation failed: " + invoice.response_text);
+    }
+  } catch (err) {
+    console.error("Error during invoice creation:", err);
+    res.status(500).send("Error: " + err.message);
+  }
 });
 
 app.get("/", (req, res) => {
@@ -38,6 +43,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-
-  
