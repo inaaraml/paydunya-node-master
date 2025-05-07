@@ -2,46 +2,56 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const paydunya = require("paydunya");
 const app = express();
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-// PayDunya configuration
-paydunya.setup({
-  masterKey: process.env.MASTER_KEY,
-  privateKey: process.env.PRIVATE_KEY,
-  publicKey: process.env.PUBLIC_KEY,
-  token: process.env.TOKEN,
-  mode: "test", // Use "live" in production
-});
+// PayDunya Setup
+paydunya.debug(true);
+paydunya.setKeys(
+  process.env.MASTER_KEY,
+  process.env.PRIVATE_KEY,
+  process.env.PUBLIC_KEY,
+  process.env.TOKEN
+);
+paydunya.setMode("test"); // or "live"
 
-// Payment route
-app.get("/pay", async (req, res) => {
-  const invoice = new paydunya.Invoice();
-
-  invoice.addItem("Commande Shopify", 1, 5000, 5000);
-  invoice.description = "Paiement Shopify via PayDunya";
-  invoice.totalAmount = 5000;
-
-  try {
-    const success = await invoice.create();
-    if (success) {
-      res.redirect(invoice.url); // Redirect to PayDunya payment page
-    } else {
-      res.status(500).send("Échec de la création de la facture.");
+app.get("/pay", (req, res) => {
+  paydunya.Invoice.create({
+    invoice: {
+      items: [
+        {
+          name: "Test Product",
+          quantity: 1,
+          unit_price: 5000,
+          total_price: 5000
+        }
+      ],
+      description: "Test payment from PayDunya",
+      total_amount: 5000,
+    },
+    actions: {
+      callback_url: "https://your-callback-url.com",
+      cancel_url: "https://your-cancel-url.com",
+      return_url: "https://your-return-url.com"
     }
-  } catch (err) {
-    res.status(500).send("Erreur : " + err.message);
-  }
+  }, function (resp, invoice) {
+    if (resp === true) {
+      res.redirect(invoice.response.checkout_url);
+    } else {
+      res.status(500).send("Payment creation failed: " + invoice.response.text);
+    }
+  });
 });
 
-// Root route
 app.get("/", (req, res) => {
-  res.send("Serveur PayDunya opérationnel !");
+  res.send("Hello, PayDunya server is working!");
 });
 
 app.listen(port, () => {
-  console.log(`Serveur lancé sur le port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
+
+
 
   
