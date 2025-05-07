@@ -5,10 +5,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Set up PayDunya API keys
-const MASTER_KEY = p0BUuHM8-FUfj-tK5d-jaEr-obgOHMMdDMpB;  // Replace with your PayDunya master key
-const PRIVATE_KEY = test_private_x37dj3brXj1z4T4BsclKCCExKFX; // Replace with your PayDunya private key
-const PUBLIC_KEY = test_public_ZTs70WPu5LFhdn3Lbhrq1amGKua;  // Replace with your PayDunya public key
-const TOKEN = zngSd5eMh1qn6sxCEBJs;            // Replace with your PayDunya token
+const MASTER_KEY = 'p0BUuHM8-FUfj-tK5d-jaEr-obgOHMMdDMpB';  // Replace with your PayDunya master key
+const PRIVATE_KEY = 'test_private_x37dj3brXj1z4T4BsclKCCExKFX'; // Replace with your PayDunya private key
+const PUBLIC_KEY = 'test_public_ZTs70WPu5LFhdn3Lbhrq1amGKua';  // Replace with your PayDunya public key
+const TOKEN = 'zngSd5eMh1qn6sxCEBJs';            // Replace with your PayDunya token
 
 // Initialize PayDunya with the API keys
 paydunya.setup({
