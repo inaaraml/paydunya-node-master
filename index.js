@@ -41,11 +41,11 @@ app.get('/pay', async (req, res) => {
     }, {
       headers: {
         'Content-Type': 'application/json',
-        'PAYDUNYA_MASTER_KEY': paydunyaConfig.masterKey,
-        'PAYDUNYA_PRIVATE_KEY': paydunyaConfig.privateKey,
-        'PAYDUNYA_PUBLIC_KEY': paydunyaConfig.publicKey,
-        'PAYDUNYA_TOKEN': paydunyaConfig.token,
-        'PAYDUNYA_MODE': paydunyaConfig.mode
+        'p0BUuHM8-FUfj-tK5d-jaEr-obgOHMMdDMpB': paydunyaConfig.masterKey,
+        'test_private_x37dj3brXj1z4T4BsclKCCExKFX': paydunyaConfig.privateKey,
+        'test_public_ZTs70WPu5LFhdn3Lbhrq1amGKua': paydunyaConfig.publicKey,
+        'zngSd5eMh1qn6sxCEBJs': paydunyaConfig.token,
+        'test': paydunyaConfig.mode
       }
     });
 
