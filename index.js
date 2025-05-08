@@ -1,74 +1,66 @@
+// fichier: index.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware to parse JSON
 app.use(bodyParser.json());
 
-// PayDunya API credentials
 const paydunyaConfig = {
-  masterKey: 'p0BUuHM8-FUfj-tK5d-jaEr-obgOHMMdDMpB',
-  privateKey: 'test_private_PT8WPhFM6n0JJ0XcVTMTExXR3qI',
-  publicKey: 'test_public_ulXnPRaxlGAGSznQudRjOSmsnZe',
-  token: 'IVgwUfOAXoUJGfRz7x3l',
-  mode: 'test'  // change this to 'live' when moving to production
+  masterKey: process.env.PAYDUNYA_MASTER_KEY,
+  privateKey: process.env.PAYDUNYA_PRIVATE_KEY,
+  publicKey: process.env.PAYDUNYA_PUBLIC_KEY,
+  token: process.env.PAYDUNYA_TOKEN,
+  mode: 'test' // ou 'live' si tu passes en production
 };
 
-// Test homepage route
 app.get('/', (req, res) => {
-  res.send('Bienvenue sur l’intégration PayDunya – Shopify');
+  res.send('Bienvenue sur PayDunya SoftPay pour Shopify');
 });
 
-// Route to create payment invoice
-app.get('/pay', async (req, res) => {
+app.post('/pay', async (req, res) => {
   try {
-    // Make the API request to create a payment invoice
-    const response = await axios.post('https://app.paydunya.com/api/v1/checkout-invoice/create', {
+    const invoiceData = {
       invoice: {
         items: [
           {
-            name: 'Test Product',
+            name: 'Produit Shopify',
             quantity: 1,
             unit_price: 5000,
             total_price: 5000,
-            description: 'Paiement test via Shopify'
+            description: 'Paiement via Shopify'
           }
         ],
         total_amount: 5000,
-        description: 'Paiement test'
+        description: 'Facture Shopify'
       }
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'PAYDUNYA-MASTER-KEY': paydunyaConfig.masterKey,
-        'PAYDUNYA-PRIVATE-KEY': paydunyaConfig.privateKey,
-        'PAYDUNYA-PUBLIC-KEY': paydunyaConfig.publicKey,
-        'PAYDUNYA-TOKEN': paydunyaConfig.token,
-        'PAYDUNYA-MODE': paydunyaConfig.mode
-      }
-    });
+    };
 
-    // Debug the PayDunya response
-    console.log('PayDunya response:', response.data);
+    const headers = {
+      'Content-Type': 'application/json',
+      'PAYDUNYA-MASTER-KEY': paydunyaConfig.masterKey,
+      'PAYDUNYA-PRIVATE-KEY': paydunyaConfig.privateKey,
+      'PAYDUNYA-PUBLIC-KEY': paydunyaConfig.publicKey,
+      'PAYDUNYA-TOKEN': paydunyaConfig.token,
+      'PAYDUNYA-MODE': paydunyaConfig.mode
+    };
 
-    // Check if the checkout URL is present in the response
+    const response = await axios.post('https://app.paydunya.com/api/v1/checkout-invoice/create', invoiceData, { headers });
     const checkoutUrl = response.data?.response?.checkout_url;
 
     if (checkoutUrl) {
-      res.redirect(checkoutUrl);  // Redirect the user to the checkout URL
+      res.status(200).json({ url: checkoutUrl });
     } else {
-      res.status(500).send('Erreur: Lien de paiement introuvable.');
+      res.status(500).json({ error: 'Aucun lien de paiement retourné.' });
     }
   } catch (error) {
-    // Handle errors and log them for debugging
-    console.error('Erreur PayDunya:', error.response?.data || error.message);
-    res.status(500).send('Erreur lors de la création du paiement.');
+    console.error('Erreur:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Erreur lors de la création du paiement.' });
   }
 });
 
-// Start the server
 app.listen(port, () => {
-  console.log(`Serveur démarré sur le port ${port}`);
+  console.log(`Serveur PayDunya actif sur le port ${port}`);
 });
