@@ -1,14 +1,24 @@
 {
-  "name": "paydunya-shopify-integration",
+  "name": "paydunya-softpay-server",
   "version": "1.0.0",
-  "description": "Integration between Shopify and PayDunya",
+  "description": "Serveur Express pour intégrer PayDunya SoftPay à Shopify",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "paydunya",
+    "softpay",
+    "shopify",
+    "integration",
+    "express"
+  ],
+  "author": "Ton Nom",
+  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
+    "axios": "^1.6.8",
     "body-parser": "^1.20.2",
-    "axios": "^1.6.0"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
   }
 }
